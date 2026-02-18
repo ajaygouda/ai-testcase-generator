@@ -6,8 +6,8 @@ import {
   Bot,
   Zap,
   FileText,
-  Sheet3,
-  LogSquare,
+  Grid3x3,
+  Activity,
   Settings,
 } from "lucide-react";
 
@@ -52,12 +52,12 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             href="/test-cases"
           />
           <NavItem
-            icon={Sheet3}
+            icon={Grid3x3}
             label="Google Sheets"
             href="/google-sheets"
           />
           <NavItem
-            icon={LogSquare}
+            icon={Activity}
             label="Logs"
             href="/logs"
           />
