@@ -68,7 +68,7 @@ src/
 ├── app/
 │   ├── layout.tsx       # Root layout with sidebar
 │   ├── page.tsx         # Dashboard page
-│   └── globals.css      # Global styles and theme
+│   └── globals.scss      # Global styles and theme
 ├── components/
 │   ├── Sidebar.tsx      # Navigation sidebar
 │   ├── MetricCard.tsx   # Metric display component
