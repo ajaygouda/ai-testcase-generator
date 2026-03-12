@@ -1,24 +1,26 @@
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import AuthProvider from "@/components/SessionProvider";
+import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
-import { Sidebar } from "@/components/Sidebar";
 
 export const metadata: Metadata = {
   title: "Vation.ai - Dashboard",
   description: "AI-powered test automation dashboard",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en" className="dark">
       <body className="bg-background text-foreground">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-auto">{children}</main>
-        </div>
+        <AuthProvider session={session}>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

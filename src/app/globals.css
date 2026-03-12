@@ -6,60 +6,55 @@
 @tailwind utilities;
 
 @layer base {
-  /**
-   * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
-   * A different format will require also updating the theme in tailwind.config.ts.
-  */
   :root {
-    --background: 217 32% 17%;
-    --foreground: 210 40% 98%;
+    --axis-color: #10141a;
+    /* Light theme */
+    --background: 0 0% 98%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 217 32% 22%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 217 32% 22%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 160 84% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 221.2 83.2% 53.3%;
+    /* blue */
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 217 32% 22%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 217 32% 25%;
-    --muted-foreground: 215 20.2% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 160 84% 50%;
+    /* green accent */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 20%;
-    --input: 217 32% 25%;
-    --ring: 160 84% 50%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 217 32% 17%;
-
-    --sidebar-foreground: 210 40% 98%;
-
-    --sidebar-primary: 160 84% 50%;
-
-    --sidebar-primary-foreground: 0 0% 100%;
-
-    --sidebar-accent: 217 32% 22%;
-
-    --sidebar-accent-foreground: 210 40% 98%;
-
-    --sidebar-border: 217 32% 20%;
-
-    --sidebar-ring: 160 84% 50%;
+    /* Sidebar */
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
   }
 
   .dark {
+    /* Dark theme */
+    --axis-color: #d1d5db;
     --background: 217 32% 17%;
     --foreground: 210 40% 98%;
 
@@ -70,6 +65,7 @@
     --popover-foreground: 210 40% 98%;
 
     --primary: 160 84% 50%;
+    /* green accent */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217 32% 22%;
@@ -81,13 +77,14 @@
     --accent: 160 84% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 20%;
+    --border: 217 32% 10%;
     --input: 217 32% 25%;
     --ring: 160 84% 50%;
 
+    /* Sidebar dark */
     --sidebar-background: 217 32% 17%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 160 84% 50%;
@@ -108,14 +105,15 @@
     @apply bg-background text-foreground;
   }
 
-  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
   pre,
   code {
     overflow-x: auto;
     white-space: pre;
+  }
+}
+
+@layer components {
+  .form-input-theme {
+    @apply w-full bg-background border border-border rounded-lg pl-9 pr-4 py-3 text-xs text-foreground focus:outline-none focus:border-primary transition-colors;
   }
 }

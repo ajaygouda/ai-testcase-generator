@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  darkMode: ["class"], // toggle via .dark class
   content: ["./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
@@ -13,6 +13,7 @@ export default {
       },
     },
     extend: {
+      fontFamily: { sans: ["Inter", "sans-serif"] },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
