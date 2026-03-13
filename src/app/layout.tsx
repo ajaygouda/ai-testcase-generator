@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import AuthProvider from "@/components/SessionProvider";
 import { ThemeProvider } from "@/context/ThemeContext";
 import "./globals.css";
+
 
 export const metadata: Metadata = {
   title: "Vation.ai - Dashboard",

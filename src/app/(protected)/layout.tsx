@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { TestCaseProvider } from "@/context/TestCaseContext";
 import { normalizeSheetData } from "@/utils/normalizeSheetData";
+import { authOptions } from "@/lib/auth";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const session = await getServerSession(authOptions);
