@@ -22,8 +22,6 @@ interface IGeneratePanelProps {
     onDone: (parsed: any, platformLabel: string, source: any) => void;
 }
 
-console.log("TC_TYPES",TC_TYPES)
-
 
 export default function GeneratePanel({ testCases, open, onClose, onDone }: IGeneratePanelProps) {
     const [step, setStep] = useState<number>(1);
@@ -121,8 +119,6 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
     };
 
     const stepLabels = ["Platform", "Source", "Types"];
-
-    console.log("testCases",testCases)
 
     return (
         <>

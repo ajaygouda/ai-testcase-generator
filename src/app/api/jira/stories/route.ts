@@ -26,7 +26,6 @@ export async function GET(req: Request) {
     );
 
     const dashData = await dashRes.json();
-    console.log("Dashboard gadgets:", dashData);
 
     // Step 2: Fetch stories using new /search/jql API ✅
     const project = process.env.JIRA_PROJECT_KEY || "VA";

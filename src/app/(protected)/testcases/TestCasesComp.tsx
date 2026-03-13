@@ -161,7 +161,6 @@ export default function TestCasesComp() {
         })
       })
       const jiraData = await jiraRes.json();
-      console.log("Jira sub-task created:", jiraData);
     }
     catch (err: any) {
       console.error("Error saving cases:", err);

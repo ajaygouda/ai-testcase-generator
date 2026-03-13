@@ -23,11 +23,7 @@ export async function GET() {
       cache: "no-store",
     });
 
-    console.log("Jira response status:", response.status);
-
     const text = await response.text(); // read raw first
-    console.log("Jira raw response:", text);
-
     if (!response.ok) {
       return Response.json({ error: `Jira error ${response.status}`, detail: text }, { status: response.status });
     }

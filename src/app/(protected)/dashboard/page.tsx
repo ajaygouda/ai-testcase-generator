@@ -8,10 +8,7 @@ import React from 'react'
 
 const Dashboard = () => {
   const { testCases} = useTestCases();
-
-  console.log("ff",testCases.filter((item)=>item.priority === "High").map((i:any)=>
-     ({"name":i.storyid})
-))
+  
   let covered = [...new Set(testCases.map((item)=>item.storyid))];
   
 
