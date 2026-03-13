@@ -51,7 +51,6 @@ export async function GET(req: Request) {
     return Response.json(data);
 
   } catch (error: any) {
-    console.error("Fetch error:", error);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }

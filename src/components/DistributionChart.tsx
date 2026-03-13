@@ -13,7 +13,6 @@ export default function TestCaseTypesChart({ testCases }: PriorityPieChartProps)
         const axisColor = getComputedStyle(document.documentElement)
             .getPropertyValue("--axis-color")
             .trim();
-        console.log("axisColor", axisColor)
 
         const seriesData = TC_TYPES.map(t =>
             testCases.filter(tc => tc.type === t.label).length

@@ -12,7 +12,6 @@ export default async function ProtectedLayout({ children }: { children: React.Re
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testcases`, { cache: "no-store" });
     const resData = await res.json();
-        console.log("resData",resData)
     const testCases: any = normalizeSheetData(resData);
 
     return (

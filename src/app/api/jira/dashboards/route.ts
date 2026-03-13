@@ -32,7 +32,6 @@ export async function GET() {
     return Response.json(data);
 
   } catch (error: any) {
-    console.error("Fetch error:", error);
     return Response.json({ error: error.message, stack: error.stack }, { status: 500 });
   }
 }
