@@ -279,7 +279,7 @@ export default function TestCasesComp() {
             </div>
 
             <div className="ml-auto flex items-center text-xs text-slate-500 gap-1">
-              <button onClick={handleSync} type="button">Sync</button>
+              {/* <button onClick={handleSync} type="button">Sync</button> */}
               {/* Export button */}
               <button
                 onClick={() => exportToExcel(filtered, "testcases.xlsx")}
