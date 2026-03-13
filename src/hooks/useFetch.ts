@@ -10,7 +10,7 @@ export function useFetch<T = unknown>(url: string) {
         if (!url) return;
         setLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${url}`);
+            const res = await fetch(url);
             if (!res.ok) throw new Error(`Request failed: ${res.status}`);
             const resData: T = await res.json();
             setData(resData);

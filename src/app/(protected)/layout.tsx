@@ -5,12 +5,24 @@ import Header from "@/components/Header";
 import { TestCaseProvider } from "@/context/TestCaseContext";
 import { normalizeSheetData } from "@/utils/normalizeSheetData";
 import { authOptions } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const session = await getServerSession(authOptions);
-    if (!session) redirect("/login"); 
+    if (!session) redirect("/login");
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/testcases`, { cache: "no-store" });
+    const headersList = await headers();
+    const host = headersList.get("host");
+    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+
+    const res = await fetch(`${protocol}://${host}/api/testcases`, {
+        cache: "no-store",
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch testcases");
+    }
+
     const resData = await res.json();
     const testCases: any = normalizeSheetData(resData);
 
