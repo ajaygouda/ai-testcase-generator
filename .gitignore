@@ -42,3 +42,8 @@ lerna-debug.log*
 # IDE
 .vscode
 .idea
+
+# Credentials
+credentials.json
+src/config/credentials.json
+src/config/
