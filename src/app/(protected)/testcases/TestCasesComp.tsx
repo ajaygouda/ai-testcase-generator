@@ -206,8 +206,8 @@ export default function TestCasesComp() {
                 className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
               >
                 <option value="All">All Story</option>
-                {stories?.map((story) => (
-                  <option key={story.id} value={story.id}>
+                {stories?.map((story, i) => (
+                  <option key={i} value={story.id}>
                     {story.id} | {story.title}
                   </option>
                 ))}
@@ -226,8 +226,8 @@ export default function TestCasesComp() {
                 className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
               >
                 <option value="All">All Platform</option>
-                {platforms?.map(platform => (
-                  <option key={platform} value={platform}>{platform}</option>
+                {platforms?.map((platform, i) => (
+                  <option key={i} value={platform}>{platform}</option>
                 ))}
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
@@ -241,8 +241,8 @@ export default function TestCasesComp() {
                 className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
               >
                 <option value="All">All Types</option>
-                {types?.map(type => (
-                  <option key={type} value={type}>{type}</option>
+                {types?.map((type, i) => (
+                  <option key={i} value={type}>{type}</option>
                 ))}
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
@@ -256,8 +256,8 @@ export default function TestCasesComp() {
                 className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
               >
                 <option value="All">All Priority</option>
-                {priorities?.map(priority => (
-                  <option key={priority} value={priority}>{priority}</option>
+                {priorities?.map((priority, i) => (
+                  <option key={i} value={priority}>{priority}</option>
                 ))}
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
@@ -271,8 +271,8 @@ export default function TestCasesComp() {
                 className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
               >
                 <option value="All">All Status</option>
-                {statuses?.map(status => (
-                  <option key={status} value={status}>{status}</option>
+                {statuses?.map((status, i) => (
+                  <option key={i} value={status}>{status}</option>
                 ))}
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>

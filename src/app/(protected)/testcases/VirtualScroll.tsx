@@ -63,11 +63,11 @@ const VirtualScroll = ({ data, setShowDetailsModal, setSelTestcase, rowHeight = 
                 <div style={{ height: totalHeight, position: "relative" }}>
                     <table className="w-full text-foreground text-xs border-collapse table-fixed absolute top-0 left-0">
                         <tbody>
-                            {visibleData.map((tc: ITestCase, i: number) => {
+                            {visibleData?.map((tc: ITestCase, i: number) => {
                                 const sc = statusConfig[tc.status];
                                 const pc = priorityConfig[tc.priority];
                                 const index = startIndex + i;
-                                const type = tc.type.split(" ").join("")
+                                const type = tc?.type?.split(" ").join("")
 
                                 return (
                                     <tr
@@ -89,21 +89,21 @@ const VirtualScroll = ({ data, setShowDetailsModal, setSelTestcase, rowHeight = 
                                         <td className="w-[320px] px-3 py-2 truncate">{tc.title}</td>
                                         <td className="px-3 py-2 font-medium text-xs w-[100px]">
                                             <span className={`text-xs font-medium ${typeConfig[type] || "text-foreground"}`}>
-                                                {tc.type}
+                                                {tc?.type}
                                             </span>
                                         </td>
                                         <td className="px-3 py-2 font-medium text-xs w-[80px]">
                                             <span className={`badge inline-flex items-center px-2 py-0.5 rounded border font-medium uppercase tracking-wider ${pc.text} ${pc.bg} ${pc.border}`}>
-                                                {tc.priority}
+                                                {tc?.priority}
                                             </span>
                                         </td>
                                         <td className="px-3 py-2 font-medium text-xs w-[100px]">
                                             <span className={`badge inline-flex items-center gap-1.5 px-2 py-0.5 rounded border ${sc.bg} ${sc.text} ${sc.border}`}>
-                                                <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`}></span>
-                                                {tc.status}
+                                                <span className={`w-1.5 h-1.5 rounded-full ${sc?.dot}`}></span>
+                                                {tc?.status}
                                             </span>
                                         </td>
-                                        <td className="w-[150px] px-3 py-2">{tc.generatedat}</td>
+                                        <td className="w-[150px] px-3 py-2">{tc?.generatedat}</td>
                                     </tr>
                                 );
                             })}

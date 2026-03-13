@@ -8,6 +8,7 @@ import React from 'react'
 
 const Dashboard = () => {
   const { testCases} = useTestCases();
+  console.log("testCases",testCases)
   
   let covered = [...new Set(testCases.map((item)=>item.storyid))];
   

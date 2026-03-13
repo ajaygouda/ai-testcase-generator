@@ -6,7 +6,7 @@ export function normalizeSheetData(data: any) {
 
     return rows.map(row => {
         const obj: Record<string, string> = {};
-        headers.forEach((header, i) => {
+        headers?.forEach((header, i) => {
             obj[header.trim()] = row[i]; // trim spaces in headers
         });
         return obj;
