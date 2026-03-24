@@ -1,7 +1,8 @@
+"use client"
+import React, { useEffect, useState } from "react";
 import { priorityConfig } from "@/constants/priorityConfig";
 import { statusConfig } from "@/constants/statusConfig";
 import { typeConfig } from "@/constants/typeConfig";
-import React from "react";
 
 interface TestCase {
     id: string;
@@ -26,17 +27,23 @@ interface ModalProps {
 }
 
 const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave }) => {
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!open) setLoading(false);
+    }, [open]);
+    
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-background/90 z-50">
             <div className="bg-card rounded-lg shadow-lg w-3/4 max-w-9xl p-6">
-                <h2 className="text-xl mb-4">Generated Test Cases</h2>
+                <h2 className="text-xl text-foreground mb-4">Generated Test Cases</h2>
 
-                <div className="overflow-y-auto max-h-96 border border-slate-600 rounded">
+                <div className="overflow-y-auto max-h-96 border">
                     <table className="table-auto text-left text-xs w-full border-collapse">
                         <thead>
-                            <tr className="bg-slate-800 border-b border-slate-600 px-4 py-2 uppercase">
+                            <tr className="px-4 py-2 bg-background text-foreground uppercase">
                                 <th className="px-4 py-2 w-[100px]">ID</th>
                                 <th className="px-4 py-2 w-[80px]">Type</th>
                                 <th className="px-4 py-2 w-[200px]">Title</th>
@@ -52,7 +59,7 @@ const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave
                                 const pc = priorityConfig[tc.priority];
                                 const type = tc.type.split(" ").join("")
                                 return (
-                                    <tr key={tc.id} className="border-b border-slate-600">
+                                    <tr key={tc.id} className="border-b border-grey-200 text-foreground">
                                         <td className="px-4 py-2">{tc.id}</td>
                                         <td className="px-4 py-2">
                                             <span className={`${typeConfig[type]}`}>{tc.type}</span>
@@ -81,15 +88,30 @@ const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave
                 <div className="flex justify-end space-x-4 mt-6">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 text-xs bg-slate-500 rounded hover:bg-slate-600"
+                        className="px-4 py-2 text-xs rounded border text-foreground"
                     >
                         Cancel
                     </button>
                     <button
-                        onClick={() => onSave(testCases)}
-                        className="px-4 py-2 text-xs bg-slate-100 text-slate-900 rounded hover:bg-slate-200"
+                        onClick={() => { onSave(testCases); setLoading(true) }}
+                        className="px-4 py-2 text-xs bg-green-500 flex gap-1 items-center text-white rounded hover:bg-green-600"
                     >
-                        Save & Sync
+                        {loading ?
+                            <>
+                                <svg
+                                    className="animate-spin"
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                >
+                                    <path d="M21 12a9 9 0 11-6.219-8.56" />
+                                </svg>
+                                Saving...
+                            </> : "Save & Sync"}
+
                     </button>
                 </div>
             </div>

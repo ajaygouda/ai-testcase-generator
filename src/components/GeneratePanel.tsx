@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { PLATFORMS, T, TC_TYPES } from '@/constants/common';
 import { ITestCase } from '@/models/ITestCase';
 import { useFetch } from '@/hooks/useFetch';
+import { ChevronLeft } from "lucide-react";
 import { IJiraDashboard, IJiraDashboardResponse, IJiraStory, IJiraStoryResponse } from '@/models/IJira';
+import { useToast } from '@/context/ToastContext';
 
 function PIcon({ p, size = 24 }) {
     if (!p) return null;
@@ -24,6 +26,7 @@ interface IGeneratePanelProps {
 
 
 export default function GeneratePanel({ testCases, open, onClose, onDone }: IGeneratePanelProps) {
+    const { showToast } = useToast();
     const [step, setStep] = useState<number>(1);
     const [selPlatform, setSelPlatform] = useState<any>(null);
     const [selSource, setSelSource] = useState<any>(null);
@@ -111,8 +114,10 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                 onDone(parsed, platform?.label, selSource);
                 onClose();
             }, 1000);
+            showToast("success", "Testcase generated successfully!")
         } catch {
             setError("Generation failed. Please try again.");
+            showToast("success", "Something went wrong.")
         } finally {
             setGenerating(false);
         }
@@ -216,9 +221,9 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                             <div className="flex items-center gap-2 mb-4">
                                 <button
                                     onClick={() => setStep(1)}
-                                    className="bg-transparent border border-border rounded px-2.5 py-1 text-muted-foreground text-[10px] cursor-pointer"
+                                    className="bg-transparent flex gap-1 items-center border border-border rounded px-1.5 py-0.5 text-muted-foreground text-xs cursor-pointer"
                                 >
-                                    ← Back
+                                    <ChevronLeft size={16} /> Back
                                 </button>
                                 <PIcon p={platform} size={20} />
                                 <span className="text-sm font-semibold text-foreground">{platform.label}</span>
@@ -295,9 +300,9 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                             <div className="flex items-center gap-2 mb-4">
                                 <button
                                     onClick={() => setStep(2)}
-                                    className="bg-transparent border border-border rounded px-2.5 py-1 text-muted-foreground text-[10px] cursor-pointer"
+                                    className="bg-transparent flex gap-1 items-center border border-border rounded px-1.5 py-0.5 text-muted-foreground text-xs cursor-pointer"
                                 >
-                                    ← Back
+                                    <ChevronLeft size={16} /> Back
                                 </button>
                                 <PIcon p={platform} size={20} />
                                 <span className="text-sm font-semibold text-foreground">{platform.label}</span>

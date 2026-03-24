@@ -13,6 +13,7 @@ import { exportToExcel } from "@/utils/exportExcel";
 import VirtualScroll from "./VirtualScroll";
 
 import { ITestCase } from "@/models/ITestCase";
+import { useToast } from "@/context/ToastContext";
 
 const mockData = [
   {
@@ -79,6 +80,7 @@ const mockData = [
 
 
 export default function TestCasesComp() {
+  const { showToast } = useToast();
   const { data: session, status } = useSession();
   const { testCases, setTestCases } = useTestCases();
 
@@ -160,10 +162,12 @@ export default function TestCasesComp() {
           testCases: cases
         })
       })
+      showToast("success", "AI generated testcases saved successfully!")
       const jiraData = await jiraRes.json();
     }
     catch (err: any) {
       console.error("Error saving cases:", err);
+       showToast("success", "Something went wrong.")
     }
   }
 
@@ -286,7 +290,7 @@ export default function TestCasesComp() {
                 className="flex items-center gap-2 px-2 py-2 rounded-md 
                 bg-green-500/10 border border-green-500 text-green-500 
                 text-[12px] font-semibold font-sans cursor-pointer 
-                transition-transform duration-150 hover:bg-green-500/20 hover:-translate-y-0.5"
+                transition-transform duration-150 hover:bg-green-500/20"
               >
                 <div className="w-5 h-5 rounded bg-green-500/10 border border-green-500 flex items-center justify-center">
                   <FileDown className="h-3 w-3 text-green-500" strokeWidth={2} />
@@ -303,7 +307,7 @@ export default function TestCasesComp() {
                 className="flex items-center gap-2 px-2 py-2 rounded-md 
                 bg-primary/10 border border-primary/40 text-primary 
                 text-[12px] font-semibold font-sans cursor-pointer 
-                transition-transform duration-150 hover:bg-primary/20 hover:-translate-y-0.5"
+                transition-transform duration-150 hover:bg-primary/20"
               >
                 <div className="w-5 h-5 rounded bg-primary/20 border border-primary/40 flex items-center justify-center">
                   <Plus className="h-3 w-3 text-primary" strokeWidth={2.5} />
