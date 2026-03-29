@@ -7,11 +7,11 @@ export interface ITestCase {
     title: string;
     type: string;
     priority: "High" | "Medium" | "Low";
-    precondition?: string;
+    precondition: string;
     steps: string;
     expected: string;
     notes?: string;
-    status: "Passed" | "Failed" | "New";
+    status: "Passed" | "Failed" | "New" | "To Do" | "In Progress" | "Done" | string;
     platform: string;
     source: string;
     generatedat: string;

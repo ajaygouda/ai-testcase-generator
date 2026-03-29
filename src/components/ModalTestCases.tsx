@@ -3,27 +3,13 @@ import React, { useEffect, useState } from "react";
 import { priorityConfig } from "@/constants/priorityConfig";
 import { statusConfig } from "@/constants/statusConfig";
 import { typeConfig } from "@/constants/typeConfig";
-
-interface TestCase {
-    id: string;
-    title: string;
-    type: string;
-    priority: string;
-    precondition: string;
-    steps: string;
-    expected: string;
-    notes: string;
-    status: string;
-    platform: string;
-    source: string;
-    generatedat: string;
-}
+import { ITestCase } from "@/models/ITestCase";
 
 interface ModalProps {
     open: boolean; // 👈 add open prop
-    testCases: TestCase[];
+    testCases: ITestCase[];
     onClose: () => void;
-    onSave: (testCases: TestCase[]) => void;
+    onSave: (testCases) => void;
 }
 
 const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave }) => {
@@ -32,7 +18,7 @@ const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave
     useEffect(() => {
         if (!open) setLoading(false);
     }, [open]);
-    
+
     if (!open) return null;
 
     return (

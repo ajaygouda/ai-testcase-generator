@@ -30,7 +30,9 @@ export interface IJiraStoryDescriptionNode {
 export interface IJiraStory {
     id: string;
     key: string;
-    testCases?:ITestCase[];
+    title?: string;
+    acceptanceCriteria?: string;
+    testCases?: ITestCase[];
     fields: {
         summary: string;
         created: string;

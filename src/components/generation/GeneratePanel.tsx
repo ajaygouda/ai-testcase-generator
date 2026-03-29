@@ -7,6 +7,9 @@ import { useFetch } from '@/hooks/useFetch';
 import { ChevronLeft } from "lucide-react";
 import { IJiraDashboard, IJiraDashboardResponse, IJiraStory, IJiraStoryResponse } from '@/models/IJira';
 import { useToast } from '@/context/ToastContext';
+import Jira from './source/Jira';
+import File from './source/File';
+import { useGenerate } from '@/hooks/useGenerate';
 
 function PIcon({ p, size = 24 }) {
     if (!p) return null;
@@ -26,29 +29,25 @@ interface IGeneratePanelProps {
 
 
 export default function GeneratePanel({ testCases, open, onClose, onDone }: IGeneratePanelProps) {
+    const { generate, loading: generating, error } = useGenerate();
     const { showToast } = useToast();
     const [step, setStep] = useState<number>(1);
     const [selPlatform, setSelPlatform] = useState<any>(null);
     const [selSource, setSelSource] = useState<any>(null);
     const [selTypes, setSelTypes] = useState([]);
-    const [generating, setGenerating] = useState(false);
-    const [error, setError] = useState(null);
     const platform = PLATFORMS.find(p => p.id === selPlatform);
     const [selDashboard, setSelDashboard] = useState("");
+
 
     const { data: jiraDashboard, loading: dashboardsLoading, error: dashboardsError } = useFetch<IJiraDashboardResponse>(selPlatform === "jira" ? "/api/jira/dashboards" : "");
     const { data: jiraStories, loading: storiesLoading, error: storiesError, refetch } = useFetch<IJiraStoryResponse>(selDashboard ? `/api/jira/stories?dashboardId=${selDashboard}` : "");
 
-    useEffect(() => { if (!open) setTimeout(() => { setStep(1); setSelPlatform(null); setSelSource(null); setSelTypes([]); setError(null); }, 350); }, [open]);
-
+    useEffect(() => { if (!open) setTimeout(() => { setStep(1); setSelPlatform(null); setSelSource(null); setSelTypes([]); }, 350); }, [open]);
 
 
     const toggleType = id => setSelTypes(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
 
-    const generate = async () => {
-        setGenerating(true);
-        setError(null);
-
+    const handleGenerate = async () => {
         const typeLabels = selTypes
             .map(t => TC_TYPES.find(x => x.id === t)?.label)
             .join(", ");
@@ -58,8 +57,8 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
             You are a senior QA engineer.
 
             Platform: ${platform?.label}
-            Source: ${selSource?.fields?.summary} (${selSource?.key} | ${selSource?.fields?.issuetype})
-            Details: ${selSource?.fields?.description || ""}
+            Source: ${selSource?.id} | ${selSource?.title}
+            Details: ${selSource.description || ""}
 
             Generate infinity test cases for each ${typeLabels}.
 
@@ -85,23 +84,14 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                 "steps":"Step 1 → Step 2",
                 "expected":"...",
                 "notes":"...",
-                "story": {
-                    "id":"${selSource?.id}",
-                    "title":"${selSource?.key}"
-                }
+                "storyid": ${selSource?.id},
+                "storytitle": ${selSource?.title},
             }
             ]
             `;
 
         try {
-            const res = await fetch("/api/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt }),
-            });
-
-            if (!res.ok) throw new Error();
-            const data = await res.json();
+            const data = await generate(prompt);
 
             // Clean the AI output 
             const raw = data.text?.replace(/```json|```/g, "").trim();
@@ -114,12 +104,9 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                 onDone(parsed, platform?.label, selSource);
                 onClose();
             }, 1000);
-            showToast("success", "Testcase generated successfully!")
+            showToast("success", "AI Testcases generated successfully!")
         } catch {
-            setError("Generation failed. Please try again.");
-            showToast("success", "Something went wrong.")
-        } finally {
-            setGenerating(false);
+            showToast("danger", "Something went wrong.")
         }
     };
 
@@ -229,66 +216,35 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                                 <span className="text-sm font-semibold text-foreground">{platform.label}</span>
                             </div>
 
-                            {/* Dashboard select */}
-                            <div className="flex gap-4 justify-between">
-                                <select
-                                    id="linkToJira"
-                                    value={selDashboard}
-                                    onChange={(e) => setSelDashboard(e.target.value)}
-                                    className="flex-1 mb-4 bg-background border border-border rounded p-2 text-xs text-foreground focus:outline-none focus:border-primary transition-colors"
-                                    disabled={dashboardsLoading}
-                                >
-                                    {dashboardsLoading ? (
-                                        <option>Loading dashboards...</option>
-                                    ) : (
-                                        <>
-                                            <option value="">Select Dashboard</option>
-                                            {jiraDashboard?.dashboards?.map((dashboard: IJiraDashboard) => (
-                                                <option key={dashboard.id} value={dashboard.id}>
-                                                    {dashboard.name}
-                                                </option>
-                                            ))}
-                                        </>
-                                    )}
-                                </select>
-                            </div>
+                            {platform.id === "jira" && <Jira
+                                selDashboard={selDashboard}
+                                setSelDashboard={setSelDashboard}
+                                dashboardsLoading={dashboardsLoading}
+                                jiraDashboard={jiraDashboard}
+                                jiraStories={jiraStories}
+                                storiesLoading={storiesLoading}
+                                handleStory={(item: IJiraStory) => {
+                                    setSelSource({
+                                        id: item?.key,
+                                        title: item?.fields?.summary,
+                                        description: item?.fields?.description,
+                                    });
+                                    setStep(3);
+                                    setSelTypes([]);
+                                }}
+                            />}
 
-                            {/* Stories list */}
-                            <div className="rounded-md border border-border h-[calc(100vh-220px)] overflow-y-auto">
-                                {storiesLoading ? (
-                                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                                        Loading stories...
-                                    </div>
-                                ) : jiraStories?.issues?.length > 0 ? (
-                                    jiraStories?.issues
-                                        .filter((item: IJiraStory) => item.fields.issuetype.subtask === false)
-                                        .map((item: IJiraStory, i, arr) =>
-                                            <div
-                                                key={item.id}
-                                                onClick={() => {
-                                                    setSelSource(item);
-                                                    setStep(3);
-                                                    setSelTypes([]);
-                                                }}
-                                                className={`flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors 
-                                            ${i < arr.length - 1 ? "border-b border-border" : ""} 
-                                            hover:bg-muted/10`}
-                                            >
-                                                <div className="flex-1">
-                                                    <div className="text-[12px] font-medium text-foreground">{item.key}</div>
-                                                    <div className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                                                        {item.id} · {item.fields.summary}
-                                                    </div>
-                                                </div>
-                                                <span className="text-primary text-[12px]">›</span>
-                                            </div>
-                                        ))
-                                    : (
-                                        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                                            No stories found
-                                        </div>
-                                    )}
-                            </div>
+                            {platform.id === "word" && <File type={platform.id}
+                                handleStory={(item: IJiraStory) => {
+                                    setSelSource({
+                                        id: item?.id,
+                                        title: item?.title,
+                                        description: item?.acceptanceCriteria,
+                                    });
+                                    setStep(3);
+                                    setSelTypes([]);
+                                }}
+                            />}
                         </>
                     )}
 
@@ -307,7 +263,7 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                                 <PIcon p={platform} size={20} />
                                 <span className="text-sm font-semibold text-foreground">{platform.label}</span>
                                 <div className="text-sm font-medium text-foreground">
-                                    <span className="px-2">/</span>{selSource.key}
+                                    <span className="px-2">/</span>{selSource.id}
                                 </div>
                             </div>
 
@@ -337,18 +293,12 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                                         >
                                             <span className="text-lg">{t.icon}</span>
                                             <div className="flex-1">
-                                                <div
-                                                    className={`text-[12px] font-semibold font-sans 
-                  ${sel ? "text-primary" : "text-foreground"}`}
-                                                >
+                                                <div className={`text-[12px] font-semibold font-sans ${sel ? "text-primary" : "text-foreground"}`}>
                                                     {t.label}
                                                 </div>
                                                 <div className="text-[10px] text-muted-foreground mt-0.5">{t.desc}</div>
                                             </div>
-                                            <div
-                                                className={`w-[17px] h-[17px] rounded-full border flex items-center justify-center text-[9px] text-white
-                ${sel ? "border-primary bg-primary" : "border-muted-foreground bg-transparent"}`}
-                                            >
+                                            <div className={`w-[17px] h-[17px] rounded-full border flex items-center justify-center text-[9px] text-white ${sel ? "border-primary bg-primary" : "border-muted-foreground bg-transparent"}`}>
                                                 {sel ? "✓" : ""}
                                             </div>
                                         </div>
@@ -365,13 +315,11 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
 
                             {/* Generate button */}
                             <button
-                                onClick={generate}
+                                onClick={handleGenerate}
                                 disabled={selTypes.length === 0 || generating}
-                                className={`w-full rounded-lg px-4 py-3 text-[12px] font-bold flex items-center justify-center gap-2 transition-colors
-        ${selTypes.length > 0
-                                        ? "bg-primary/15 border border-primary/40 text-primary cursor-pointer"
-                                        : "bg-muted/5 border border-border text-muted-foreground cursor-not-allowed"}`}
-                            >
+                                className={`w-full rounded-lg px-4 py-3 text-[12px] font-bold flex items-center justify-center gap-2 transition-colors ${selTypes.length > 0
+                                    ? "bg-primary/15 border border-primary/40 text-primary cursor-pointer"
+                                    : "bg-muted/5 border border-border text-muted-foreground cursor-not-allowed"}`}>
                                 {generating ? (
                                     <>
                                         <svg
@@ -409,8 +357,6 @@ export default function GeneratePanel({ testCases, open, onClose, onDone }: IGen
                             </button>
                         </>
                     )}
-
-
                 </div>
             </div>
         </>

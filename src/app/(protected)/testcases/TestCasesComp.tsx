@@ -7,7 +7,7 @@ import { FileDown, Plus, Search } from "lucide-react"
 
 import ModalTestCases from "@/components/ModalTestCases";
 import ModalTestCaseDetails from "@/components/ModalTestCaseDetails";
-import GeneratePanel from "@/components/GeneratePanel";
+import GeneratePanel from "@/components/generation/GeneratePanel";
 import { useTestCases } from "@/context/TestCaseContext";
 import { exportToExcel } from "@/utils/exportExcel";
 import VirtualScroll from "./VirtualScroll";
@@ -92,7 +92,7 @@ export default function TestCasesComp() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [search, setSearch] = useState("");
 
-  const [allTcs, setAllTcs] = useState([]);
+  const [allTcs, setAllTcs] = useState<ITestCase[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selTestcase, setSelTestcase] = useState(null);
@@ -126,18 +126,15 @@ export default function TestCasesComp() {
       id: `TC-${String(maxNum + index + 1).padStart(6, "0")}`,
       status: "New",
       platform: platformLabel,
-      source: source?.fields?.summary,
+      source: source?.title,
       generatedat: now,
-      storyid: tc.story.id,
-      storytitle: tc.story.title
     }));
-
+    console.log("created", created)
     setAllTcs(created);
     setShowModal(true);
   };
 
-  const handleSave = async (cases: any[]) => {
-
+  const handleSave = async (cases: ITestCase[]) => {
     try {
       const res = await fetch("api/testcases", {
         method: "POST",
@@ -152,22 +149,25 @@ export default function TestCasesComp() {
         setShowModal(false)
       }
 
-      const jiraRes = await fetch("/api/jira/subtask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify({
-          parentKey: cases && cases[0].storytitle,
-          projectKey: cases && cases[0].storytitle?.split("-")?.[0],
-          summary: "AI Generated Test Cases",
-          testCases: cases
-        })
-      })
+      const isJira = cases.some((item) => item.platform === "Jira");
+      if (isJira) {
+        const jiraRes = await fetch("/api/jira/subtask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", },
+          body: JSON.stringify({
+            parentKey: cases && cases[0].storytitle,
+            projectKey: cases && cases[0].storytitle?.split("-")?.[0],
+            summary: "AI Generated Test Cases",
+            testCases: cases
+          })
+        });
+        const jiraData = await jiraRes.json();
+      }
       showToast("success", "AI generated testcases saved successfully!")
-      const jiraData = await jiraRes.json();
     }
     catch (err: any) {
       console.error("Error saving cases:", err);
-       showToast("success", "Something went wrong.")
+      showToast("success", "Something went wrong.")
     }
   }
 
@@ -212,7 +212,7 @@ export default function TestCasesComp() {
                 <option value="All">All Story</option>
                 {stories?.map((story, i) => (
                   <option key={i} value={story.id}>
-                    {story.id} | {story.title}
+                    {story.id}
                   </option>
                 ))}
               </select>

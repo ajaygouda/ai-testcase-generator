@@ -24,7 +24,6 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
         const { testCases } = body;
-
         const sheets = await getSheetsClient();
         await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
@@ -32,7 +31,7 @@ export async function POST(req: Request) {
             valueInputOption: "RAW",
             requestBody: {
                 values: testCases.map(tc => [
-                    tc.id, tc.title, tc.type, tc.priority, tc.precondition, tc.steps, tc.expected, tc.notes, tc.status, tc.platform, tc.source, tc.generatedat, tc.story.title, tc.story.id
+                    tc.id, tc.title, tc.type, tc.priority, tc.precondition, tc.steps, tc.expected, tc.notes, tc.status, tc.platform, tc.source, tc.generatedat, tc.storyid
                 ])
             }
         });
@@ -56,7 +55,7 @@ export async function PUT(req: Request) {
             valueInputOption: "RAW",
             requestBody: {
                 values: [[
-                    testCase.id, testCase.title, testCase.type, testCase.priority, testCase.precondition, testCase.steps, testCase.expected, testCase.notes, testCase.status, testCase.platform, testCase.source, testCase.generatedat, testCase.story.title, testCase.story.id
+                    testCase.id, testCase.title, testCase.type, testCase.priority, testCase.precondition, testCase.steps, testCase.expected, testCase.notes, testCase.status, testCase.platform, testCase.source, testCase.generatedat, testCase.story.id
                 ]]
             }
         });

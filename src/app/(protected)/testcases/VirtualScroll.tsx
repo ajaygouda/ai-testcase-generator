@@ -63,12 +63,18 @@ const VirtualScroll = ({ data, setShowDetailsModal, setSelTestcase, rowHeight = 
                 <div style={{ height: totalHeight, position: "relative" }}>
                     <table className="w-full text-foreground text-xs border-collapse table-fixed absolute top-0 left-0">
                         <tbody>
+                            {visibleData.length === 0 && (
+                                <tr>
+                                    <td colSpan={8} className="text-center py-4 text-muted-foreground">
+                                        No rows to show
+                                    </td>
+                                </tr>
+                            )}
                             {visibleData?.map((tc: ITestCase, i: number) => {
                                 const sc = statusConfig[tc.status];
                                 const pc = priorityConfig[tc.priority];
                                 const index = startIndex + i;
                                 const type = tc?.type?.split(" ").join("")
-
                                 return (
                                     <tr
                                         key={tc.id}
@@ -85,7 +91,7 @@ const VirtualScroll = ({ data, setShowDetailsModal, setSelTestcase, rowHeight = 
                                     >
                                         <td className="w-[100px] px-3 py-2">{tc.id}</td>
                                         <td className="w-[80px] px-3 py-2">{tc.platform}</td>
-                                        <td className="w-[120px] px-3 py-2">{tc.storyid} | {tc.storytitle}</td>
+                                        <td className="w-[120px] px-3 py-2">{tc.storyid}</td>
                                         <td className="w-[320px] px-3 py-2 truncate">{tc.title}</td>
                                         <td className="px-3 py-2 font-medium text-xs w-[100px]">
                                             <span className={`text-xs font-medium ${typeConfig[type] || "text-foreground"}`}>
