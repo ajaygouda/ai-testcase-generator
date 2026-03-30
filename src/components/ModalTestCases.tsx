@@ -4,19 +4,23 @@ import { priorityConfig } from "@/constants/priorityConfig";
 import { statusConfig } from "@/constants/statusConfig";
 import { typeConfig } from "@/constants/typeConfig";
 import { ITestCase } from "@/models/ITestCase";
+import { Info } from "lucide-react";
 
 interface ModalProps {
     open: boolean; // 👈 add open prop
     testCases: ITestCase[];
     onClose: () => void;
-    onSave: (testCases) => void;
+    onSave: (testCases: ITestCase[], type: string) => void;
 }
 
 const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave }) => {
     const [loading, setLoading] = useState(false);
+    const [syncLoading, setSyncLoading] = useState(false);
+
+    const isJira = testCases.some((item) => item.platform === "Jira");
 
     useEffect(() => {
-        if (!open) setLoading(false);
+        if (!open) { setLoading(false); setSyncLoading(false) }
     }, [open]);
 
     if (!open) return null;
@@ -79,7 +83,8 @@ const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave
                         Cancel
                     </button>
                     <button
-                        onClick={() => { onSave(testCases); setLoading(true) }}
+                        title="Save to sheet"
+                        onClick={() => { onSave(testCases, "save"); setLoading(true) }}
                         className="px-4 py-2 text-xs bg-green-500 flex gap-1 items-center text-white rounded hover:bg-green-600"
                     >
                         {loading ?
@@ -96,9 +101,37 @@ const ModalTestCases: React.FC<ModalProps> = ({ open, testCases, onClose, onSave
                                     <path d="M21 12a9 9 0 11-6.219-8.56" />
                                 </svg>
                                 Saving...
-                            </> : "Save & Sync"}
+                            </> : "Save"
+                        }
+                        <Info className="h-3 w-3 text-foreground" />
 
                     </button>
+                    {isJira &&
+                        <button
+                            title="Save to sheet and create a subtask under the Jira story"
+                            onClick={() => { onSave(testCases, "saveSync"); setSyncLoading(true) }}
+                            className="px-4 py-2 text-xs bg-green-500 flex gap-1 items-center text-white rounded hover:bg-green-600"
+                        >
+                            {syncLoading ?
+                                <>
+                                    <svg
+                                        className="animate-spin"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                    >
+                                        <path d="M21 12a9 9 0 11-6.219-8.56" />
+                                    </svg>
+                                    Saving...
+                                </> : "Save & Sync"
+                            }
+                            <Info className="h-3 w-3 text-foreground" />
+
+
+                        </button>}
                 </div>
             </div>
         </div>

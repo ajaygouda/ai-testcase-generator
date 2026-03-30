@@ -134,7 +134,7 @@ export default function TestCasesComp() {
     setShowModal(true);
   };
 
-  const handleSave = async (cases: ITestCase[]) => {
+  const handleSave = async (cases: ITestCase[], type:string) => {
     try {
       const res = await fetch("api/testcases", {
         method: "POST",
@@ -149,8 +149,8 @@ export default function TestCasesComp() {
         setShowModal(false)
       }
 
-      const isJira = cases.some((item) => item.platform === "Jira");
-      if (isJira) {
+      // const isJira = cases.some((item) => item.platform === "Jira");
+      if (type === "saveSync") {
         const jiraRes = await fetch("/api/jira/subtask", {
           method: "POST",
           headers: { "Content-Type": "application/json", },
@@ -201,8 +201,22 @@ export default function TestCasesComp() {
       <div className="grid-bg">
         <div className="max-w-[1400px] mx-auto px-6 py-6">
           <div className="flex flex-wrap gap-3 mb-3">
-
             {/* Platform Filter */}
+            <div className="relative inline-block">
+              <select
+                value={platformFilter}
+                onChange={(e) => setPlatformFilter(e.target.value)}
+                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
+              >
+                <option value="All">All Platform</option>
+                {platforms?.map((platform, i) => (
+                  <option key={i} value={platform}>{platform}</option>
+                ))}
+              </select>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
+            </div>
+
+            {/* Story Filter */}
             <div className="relative inline-block">
               <select
                 value={storyFilter}
@@ -222,20 +236,6 @@ export default function TestCasesComp() {
             </div>
 
 
-            {/* Platform Filter */}
-            <div className="relative inline-block">
-              <select
-                value={platformFilter}
-                onChange={(e) => setPlatformFilter(e.target.value)}
-                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
-              >
-                <option value="All">All Platform</option>
-                {platforms?.map((platform, i) => (
-                  <option key={i} value={platform}>{platform}</option>
-                ))}
-              </select>
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
-            </div>
 
             {/* Platform Types */}
             <div className="relative inline-block">
