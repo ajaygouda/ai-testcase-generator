@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-import { FileDown, Plus, Search } from "lucide-react"
+import { FileDown, Plus, Search, X } from "lucide-react"
 
 import ModalTestCases from "@/components/ModalTestCases";
 import ModalTestCaseDetails from "@/components/ModalTestCaseDetails";
@@ -97,9 +97,17 @@ export default function TestCasesComp() {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selTestcase, setSelTestcase] = useState(null);
 
+  const handleClear = () => {
+    setStoryFilter("All");
+    setPlatformFilter("All");
+    setTypeFilter("All");
+    setPriorityFilter("All");
+    setStatusFilter("All")
+  }
+
   const filtered = testCases?.filter((tc: ITestCase) => {
-    const matchStory = storyFilter === "All" || tc.storyid === storyFilter;
     const matchPlatform = platformFilter === "All" || tc.platform === platformFilter;
+    const matchStory = storyFilter === "All" || tc.storyid === storyFilter;
     const matchType = typeFilter === "All" || tc.type === typeFilter;
     const matchPriority = priorityFilter === "All" || tc.priority === priorityFilter;
     const matchStatus = statusFilter === "All" || tc.status === statusFilter;
@@ -134,7 +142,7 @@ export default function TestCasesComp() {
     setShowModal(true);
   };
 
-  const handleSave = async (cases: ITestCase[], type:string) => {
+  const handleSave = async (cases: ITestCase[], type: string) => {
     try {
       const res = await fetch("api/testcases", {
         method: "POST",
@@ -171,16 +179,22 @@ export default function TestCasesComp() {
     }
   }
 
-  const stories = [
-    ...new Map(
-      testCases.map(tc => [tc.storyid, { id: tc.storyid, title: tc.storytitle }])
-    ).values()
-  ];
+
 
   const platforms: any = [...new Set(testCases?.map(tc => tc.platform))];
+  const stories = [
+    ...new Map(
+      (platformFilter === "All" ? testCases : testCases.filter(item => item.platform === platformFilter))
+        .map(tc => [tc.storyid, { id: tc.storyid, title: tc.storytitle }])
+    ).values()
+  ];
   const types: any = [...new Set(testCases?.map(tc => tc.type))];
   const priorities: any = [...new Set(testCases?.map(tc => tc.priority))];
   const statuses: any = [...new Set(testCases?.map(tc => tc.status))];
+
+  useEffect(() => {
+    setStoryFilter("All");
+  }, [platformFilter])
 
   const handleSync = async () => {
     const jiraRes = await fetch("/api/jira/subtask", {
@@ -237,12 +251,12 @@ export default function TestCasesComp() {
 
 
 
-            {/* Platform Types */}
+            {/* Types Filter */}
             <div className="relative inline-block">
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
+                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-4"
               >
                 <option value="All">All Types</option>
                 {types?.map((type, i) => (
@@ -252,12 +266,12 @@ export default function TestCasesComp() {
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
             </div>
 
-            {/* Testcase Type */}
+            {/* Priority Filter */}
             <div className="relative inline-block">
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
-                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
+                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-8"
               >
                 <option value="All">All Priority</option>
                 {priorities?.map((priority, i) => (
@@ -267,12 +281,12 @@ export default function TestCasesComp() {
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
             </div>
 
-            {/* Priority Filter */}
+            {/* Status Filter */}
             <div className="relative inline-block">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-10"
+                className="bg-background border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none pr-8"
               >
                 <option value="All">All Status</option>
                 {statuses?.map((status, i) => (
@@ -281,6 +295,10 @@ export default function TestCasesComp() {
               </select>
               <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">⏷</span>
             </div>
+
+            {/* Clear Filter */}
+            <button onClick={handleClear} className="bg-background flex gap-1 border border-border rounded-lg px-3 py-3 text-xs text-foreground focus:outline-none appearance-none" type="button"><X className="h-4 w-4" />Clear Filter</button>
+
 
             <div className="ml-auto flex items-center text-xs text-slate-500 gap-1">
               {/* <button onClick={handleSync} type="button">Sync</button> */}
@@ -312,7 +330,7 @@ export default function TestCasesComp() {
                 <div className="w-5 h-5 rounded bg-primary/20 border border-primary/40 flex items-center justify-center">
                   <Plus className="h-3 w-3 text-primary" strokeWidth={2.5} />
                 </div>
-                Generate New Test Cases
+                Generate
                 <span className="text-[10px] text-primary bg-primary/10 border border-primary/20 rounded px-1.5 font-mono">
                   AI
                 </span>
