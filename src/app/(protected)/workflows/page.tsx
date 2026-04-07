@@ -13,7 +13,7 @@ export default function Workflows() {
       <div className="w-24 flex flex-col gap-2">
         {PLATFORMS.map(p => {
           const isActive = active === p.id;
-          const isDisabled = p.id !== "jira";
+          const isDisabled = p.id !== "jira" && p.id !== "word";
           return (<button
             key={p.id}
             onClick={() => !isDisabled && setActive(p.id)}

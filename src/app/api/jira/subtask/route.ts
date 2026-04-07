@@ -19,9 +19,9 @@ export async function POST(req: NextRequest) {
       `https://${JIRA_DOMAIN}/rest/api/3/issue/${parentKey}?fields=subtasks`,
       { headers: authHeaders }
     );
-    const parentData = await parentResponse.json();
-    let subtask = parentData.fields.subtasks.find(
-      (s: any) => s.fields.summary === (summary || "AI Generated Subtask")
+    const parentData = await parentResponse?.json();
+    let subtask = parentData?.fields?.subtasks?.find(
+      (s: any) => s?.fields?.summary === (summary || "AI Generated Subtask")
     );
 
     // Step 2: If no subtask, create one
@@ -57,7 +57,14 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify(payload),
       });
-      const createData = await createResponse.json();
+      const createData = await createResponse?.json();
+
+      if (!createResponse.ok) {
+        return NextResponse.json(
+          { success: false, error: createData.errorMessages || "Subtask creation failed" },
+          { status: createResponse.status }
+        );
+      }
       subtask = { key: createData.key };
     }
 

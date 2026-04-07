@@ -137,7 +137,7 @@ export default function TestCasesComp() {
       source: source?.title,
       generatedat: now,
     }));
-    console.log("created", created)
+
     setAllTcs(created);
     setShowModal(true);
   };
@@ -156,15 +156,14 @@ export default function TestCasesComp() {
         setTestCases((prev) => [...prev, ...cases]);
         setShowModal(false)
       }
-
       // const isJira = cases.some((item) => item.platform === "Jira");
       if (type === "saveSync") {
         const jiraRes = await fetch("/api/jira/subtask", {
           method: "POST",
           headers: { "Content-Type": "application/json", },
           body: JSON.stringify({
-            parentKey: cases && cases[0].storytitle,
-            projectKey: cases && cases[0].storytitle?.split("-")?.[0],
+            parentKey: cases && cases[0].storyid,
+            projectKey: cases && cases[0].storyid?.split("-")?.[0],
             summary: "AI Generated Test Cases",
             testCases: cases
           })

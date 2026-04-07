@@ -59,7 +59,16 @@ export const PLATFORMS = [
   { id: "figma", label: "Figma", icon: "F", color: "#ff7262", bg: "rgba(255,114,98,0.1)", border: "rgba(255,114,98,0.3)", steps: [] },
   { id: "confluence", label: "Confluence", icon: "C", color: "#3b82f6", bg: "rgba(59,130,246,0.1)", border: "rgba(59,130,246,0.3)", steps: [] },
   { id: "excel", label: "Excel", icon: "X", color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.3)", steps: [] },
-  { id: "word", label: "Word", icon: "W", color: "#60a5fa", bg: "rgba(96,165,250,0.1)", border: "rgba(96,165,250,0.3)", steps: [] },
+  { id: "word", label: "Word", icon: "W", color: "#60a5fa", bg: "rgba(96,165,250,0.1)", border: "rgba(96,165,250,0.3)", steps: [
+      "Log in with Vation ID",
+      "Click the 'Generate AI Test Cases' button",
+      "Upload word file and fetch story details (Using LLM)",
+      "Select story (From uploaded file)",
+      "Select test case type (Functional, UI, etc.)",
+      "Generate using AI (Based on user story data)",
+      "Store in database",
+    ],
+  },
   { id: "zeplin", label: "Zeplin", icon: "Z", color: "#fbbf24", bg: "rgba(251,191,36,0.1)", border: "rgba(251,191,36,0.3)", steps: [] },
 ];
 
